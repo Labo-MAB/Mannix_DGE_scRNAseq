@@ -25,3 +25,4 @@ rule download_genome_fasta:
         gunzip temp_genome.gz
         mv temp_genome {output.genome}
         """
+

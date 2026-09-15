@@ -1,0 +1,64 @@
+"""
+snakemake download_genome --profile ../profile_local/
+snakemake --profile ../profile_slurm/
+snakemake analysis --profile ../profile_slurm/
+
+"""
+configfile: "../config/config.json"
+import os
+
+fastq_dir = config["path"]["fastq"]
+id_list = sorted([
+    filename.removesuffix("_R1.fastq.gz")
+    for filename in os.listdir(fastq_dir)
+    if filename.endswith("_R1.fastq.gz")
+])
+
+DGE_COMPARISONS = [
+    "HFpEF_WT-Control_WT",
+#    "Control_KO-Control_WT",
+#    "condition_genotype_interaction",
+#    "HFpEF_KO-Control_KO",
+#    "HFpEF_KO-HFpEF_WT"
+]
+
+
+include: "rules/I_download_genome.smk"  
+include: "rules/I_fastq_downloading.smk"
+include: "rules/II_preprocess.smk"
+include: "rules/III_star.smk"
+#include: "rules/III_kallisto.smk"
+include: "rules/IV_analysis.smk"
+
+rule all:
+    input:
+        expand("data/qc/{id}/{id}_R1_fastqc.html", id=id_list),
+        expand("data/trim_galore/{id}/{id}_R1_val_1.fq.gz", id=id_list),
+        expand("data/qc_after_trim/{id}/{id}_R1_val_1_fastqc.html", id=id_list),
+        expand("results/STAR/{id}/Aligned.sortedByCoord.out.bam", id=id_list),
+#        expand("results/kallisto/{id}/abundance.tsv", id=id_list),
+
+rule analysis:
+    """
+    Lance toutes les analyses WT en aval de l'alignement.
+    """
+    input:
+        rules.global_volcano.output,
+        rules.metabolic_volcano.output,
+        rules.APJ_apln_boxplot.output,
+        rules.PCA_WT.output,
+        rules.enrichment_ORA_GSEA_clusterProfiler.output
+
+
+
+rule download_genome:
+    input:
+        gtf=rules.download_gtf.output.gtf,
+        genome=rules.download_genome_fasta.output.genome,
+
+
+rule quantification: 
+    input:
+        build_transcriptome = "data/references/kallisto/transcriptome.fa",
+        filtered_abundance = "results/kallisto/{id}/abundance_filtered.tsv",  # Contient seulement les gènes quantifiés
+
