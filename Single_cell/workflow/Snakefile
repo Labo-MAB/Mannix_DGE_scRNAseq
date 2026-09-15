@@ -1,6 +1,16 @@
-# 1) snakemake download_single_cell --profile ../profile_local/
+# ============================================================
+# SINGLE-CELL PIPELINE
+#
+# 1) Download data locally:
+#    snakemake download_single_cell --profile ../profile_local/
+#
+# 2) Run analysis:
+#    snakemake --use-conda --profile ../profile_local/
+# ============================================================
 
 include: "rules/I_download_scRNAseq.smk"
+include: "rules/analysis.smk"
+
 
 rule download_single_cell:
     input:
@@ -8,3 +18,9 @@ rule download_single_cell:
         "data/single_cell/GSE304446_features.tsv.gz",
         "data/single_cell/GSE304446_barcodes.tsv.gz",
         "data/single_cell/GSE304446_cell_metadata.tsv.gz"
+
+
+rule all:
+    input:
+        rules.create_umap.output.rds,
+        rules.wee1_pseudobulk.output
