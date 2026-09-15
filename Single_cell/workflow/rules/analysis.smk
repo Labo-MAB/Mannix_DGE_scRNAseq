@@ -29,6 +29,25 @@ rule create_umap:
             {input.rds} \
             {output.rds}
         """
+rule plot_aplnr:
+    input:
+        rds=rules.create_umap.output.rds
+    output:
+        umap_celltype="results/Aplnr_final/01_UMAP_CellType_J_Ctrl_vs_HFpEF.png",
+        umap_aplnr="results/Aplnr_final/02_UMAP_Aplnr_J_Ctrl_vs_HFpEF.png",
+        abundance="results/Aplnr_final/03_Aplnr_J_abundance_vs_signal.png",
+        boxplot_J="results/Aplnr_final/04_Aplnr_J_boxplot.png",
+        boxplot_NJ="results/Aplnr_final/05_Aplnr_NJ_boxplot.png",
+        stats="results/Aplnr_final/06_Aplnr_statistics.csv"
+    params:
+        script="scripts/Aplnr_analysis.R",
+        output_dir="results/Aplnr_final"
+    shell:
+        """
+        Rscript {params.script} \
+            {input.rds} \
+            {params.output_dir}
+        """
 
 rule wee1_pseudobulk:
     input:
