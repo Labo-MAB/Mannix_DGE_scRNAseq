@@ -74,17 +74,8 @@ Create Seurat object
                  |
                  v
                DESeq2
+                 |
+                 v
+                :D
 ```
 
-## Requirements
-
-The workflows are managed with Snakemake and Conda.
-
-Main R packages used include:
-
-- DESeq2
-- Seurat
-- Matrix
-- ggplot2
-- dplyr
-- tibble
