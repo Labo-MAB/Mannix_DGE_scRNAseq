@@ -1,0 +1,10 @@
+# 1) snakemake download_single_cell --profile ../profile_local/
+
+include: "rules/I_download_scRNAseq.smk"
+
+rule download_single_cell:
+    input:
+        "data/single_cell/GSE304446_matrix.mtx.gz",
+        "data/single_cell/GSE304446_features.tsv.gz",
+        "data/single_cell/GSE304446_barcodes.tsv.gz",
+        "data/single_cell/GSE304446_cell_metadata.tsv.gz"
