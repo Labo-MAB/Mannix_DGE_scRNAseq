@@ -8,6 +8,8 @@ rule create_seurat:
         rds="results/single_cell/GSE304446_seurat.rds"
     params:
         script="scripts/create_seurat.R"
+    conda:
+        "envs/single_cell.yaml"
     shell:
         """
         mkdir -p results/single_cell
@@ -21,6 +23,8 @@ rule create_umap:
         rds="results/single_cell/umap/GSE304446_seurat_UMAP.rds"
     params:
         script="scripts/create_umap.R"
+    conda:
+        "envs/single_cell.yaml"
     shell:
         """
         mkdir -p results/single_cell/umap
@@ -42,6 +46,8 @@ rule plot_aplnr:
     params:
         script="scripts/Aplnr_analysis.R",
         output_dir="results/Aplnr_final"
+    conda:
+        "envs/single_cell.yaml"
     shell:
         """
         Rscript {params.script} \
@@ -64,6 +70,8 @@ rule wee1_pseudobulk:
     params:
         script="scripts/Wee1_pseudobulk.R",
         output_dir="results/single_cell/gene_expression"
+    conda:
+        "envs/single_cell.yaml"
     shell:
         """
         Rscript {params.script} \
